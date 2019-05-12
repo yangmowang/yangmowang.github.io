@@ -160,6 +160,188 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-gdb_use" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/05/12/gdb_use/">如何拥有属于自己的博客</a>
+    </h1>
+  
+
+        
+        <a href="/2019/05/12/gdb_use/" class="archive-article-date">
+  	<time datetime="2019-05-12T02:35:45.781Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p> 一天晚上用VScode写的东西没有没有保存，直接关机了，导致我的写的内容米有保存，内心崩溃了，忘记不是WPS不能自动保存。先长话短说，但又说来话长</p>
+<h2 id="什么是GDB"><a href="#什么是GDB" class="headerlink" title="什么是GDB"></a>什么是GDB</h2><p> Linux包含了一个叫gdb的GNU调试程序。gdb是一个用来调试c和c++程序的强力调试器。它使用户能在程序运行时观察程序的内部结构和内存的使用情况。</p>
+<h2 id="GDB的作用"><a href="#GDB的作用" class="headerlink" title="GDB的作用"></a>GDB的作用</h2><p>1 能监视程序中变量的值；<br>2 能设置断点以使程序在指定的代码行上停止执行；<br>3 能一行行地执行代码。 </p>
+<h2 id="GDB的使用"><a href="#GDB的使用" class="headerlink" title="GDB的使用"></a>GDB的使用</h2><h3 id="GDB的基本使用"><a href="#GDB的基本使用" class="headerlink" title="GDB的基本使用"></a>GDB的基本使用</h3><pre><code>1. 没有安装GDB的同学在LIUNX上输入以下命令可以自动安装
+</code></pre><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ yum install gdb <span class="comment">#安装GDB</span></span><br></pre></td></tr></table></figure>
+<pre><code>2. 在使用GDB调试的前提条件是在程序编译的时候要带 —g,使你的程序带调试信息，不然使用GDB是没有什么错误信息的。
+</code></pre><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 我现在有一个程序叫做text.c</span></span><br><span class="line">$ gcc text.c -o text -g <span class="comment"># 带参数-g编译程序</span></span><br></pre></td></tr></table></figure>
+<pre><code>3. 如果你想直接的调试你的程序可以进行这样的操作
+</code></pre><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 直接调试程序</span></span><br><span class="line">$ gdb ./text</span><br><span class="line"><span class="comment"># 这里会输出GDB的一些信息我这里省略......</span></span><br><span class="line">$ &lt;gdb&gt; b [函数名 | 函数代码行 | &lt;文件名：行号&gt;|&lt;文件名：函数&gt; | &lt;*地址&gt; ] <span class="comment">#这里列出打断点的常用方式</span></span><br><span class="line">$ &lt;gdb&gt; info b <span class="comment"># 查看所有的断线信息</span></span><br><span class="line">$ &lt;gdb&gt; delete [id] <span class="comment"># 删除断点</span></span><br><span class="line">$ &lt;gdb&gt; r <span class="comment"># 开始运行程序</span></span><br><span class="line">$ &lt;gdb&gt; n <span class="comment"># 逐步运行</span></span><br><span class="line">$ &lt;gdb&gt; s <span class="comment"># 运行到函数内部</span></span><br><span class="line">$ &lt;gdb&gt; p [变量名 | &amp;变量名] <span class="comment"># 查看变量的内容</span></span><br><span class="line">$ &lt;gdb&gt; <span class="built_in">set</span> var [变量名]=[表达式] <span class="comment"># 设置变量值</span></span><br><span class="line">$ &lt;gdb&gt; x/[number][x|d|u|o|t|a|c|f|S|i] [变量名] <span class="comment"># 变量内容的输出格式，number 指示的是连续几块的内存空间</span></span><br><span class="line">$ &lt;gdb&gt; c <span class="comment"># 继续运行程序</span></span><br><span class="line">$ &lt;gdb&gt; bt <span class="comment"># 显示所有的栈针，这个涉及到函数栈的理解，我会在文章适当的位置解释。</span></span><br><span class="line">$ &lt;gdb&gt; frame [id] <span class="comment"># 进入栈帧</span></span><br></pre></td></tr></table></figure>
+<h4 id="这些够你在你自己在写自己的demo的时候去测试程序了"><a href="#这些够你在你自己在写自己的demo的时候去测试程序了" class="headerlink" title="这些够你在你自己在写自己的demo的时候去测试程序了."></a>这些够你在你自己在写自己的demo的时候去测试程序了.</h4><h3 id="如何在运行的程序上调试"><a href="#如何在运行的程序上调试" class="headerlink" title="如何在运行的程序上调试"></a>如何在运行的程序上调试</h3><pre><code>会有一个问题：
+1.如果我的程序已经在跑了，而且有问题，我又不想挂掉程序（可能程序运行了很久，问题的产生有一定前提条件）。
+2.或者程序没有响应了（可能死循环了）.
+</code></pre><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ ps -aux | grep text | grep -v <span class="string">"grep"</span> <span class="comment"># 找出你的程序的pid</span></span><br><span class="line"><span class="comment"># pid = 10000</span></span><br><span class="line">$ gdb -p 10000 <span class="comment"># 链接你的程序开始调试</span></span><br><span class="line"><span class="comment"># 注意，你的程序要使用-g编译，链接成功后，你的程序处于中断状态，没有运行。</span></span><br><span class="line">$ bt <span class="comment"># 查看目前的函数的栈帧</span></span><br><span class="line"><span class="comment">#分析 在可能出现问题的位置打上断点</span></span><br><span class="line">$ b xxx <span class="comment"># 打断点</span></span><br><span class="line">$ c <span class="comment"># 继续运行你的程序</span></span><br><span class="line"><span class="comment">#开始调试</span></span><br></pre></td></tr></table></figure>
+<h3 id="如果程序崩溃怎么查找原因"><a href="#如果程序崩溃怎么查找原因" class="headerlink" title="如果程序崩溃怎么查找原因"></a>如果程序崩溃怎么查找原因</h3><p> 这时候你可以使用GDB+coredump 来调试的你的程序</p>
+<h4 id="coredump"><a href="#coredump" class="headerlink" title="coredump"></a>coredump</h4><p> coredump程序内部自带的，在你的程序崩溃的时候，会自带保存崩溃的函数和寄存器的信息。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">ulimit</span> -a </span><br><span class="line"></span><br><span class="line">core file size          (blocks, -c) 0</span><br><span class="line">data seg size           (kbytes, -d) unlimited</span><br><span class="line">scheduling priority             (-e) 0</span><br><span class="line">file size               (blocks, -f) unlimited</span><br><span class="line">pending signals                 (-i) 3873</span><br><span class="line">max locked memory       (kbytes, -l) 64</span><br><span class="line">max memory size         (kbytes, -m) unlimited</span><br><span class="line">open files                      (-n) 65535</span><br><span class="line">pipe size            (512 bytes, -p) 8</span><br><span class="line">POSIX message queues     (bytes, -q) 819200</span><br><span class="line">real-time priority              (-r) 0</span><br><span class="line">stack size              (kbytes, -s) 8192</span><br><span class="line">cpu time               (seconds, -t) unlimited</span><br><span class="line">max user processes              (-u) 3873</span><br><span class="line">virtual memory          (kbytes, -v) unlimited</span><br><span class="line">file locks                      (-x) unlimited</span><br><span class="line"></span><br><span class="line"><span class="comment"># 看 core file size 这个是你程序崩溃的时候，保存的信息数量。</span></span><br><span class="line">$ <span class="built_in">ulimit</span> -c unlimited <span class="comment"># 这里我设置成无限制 （这里只是设置成当前会话生效，如何永久生效，文章后面介绍）</span></span><br><span class="line"><span class="comment"># 你现在可能测试下是程序崩溃的时候，当前目录下是不是有的core.xxx文件。</span></span><br><span class="line"><span class="comment"># 怎么使程序崩溃？？？？ 你可以释放字符串常量的内存，/0, 给NULL指针赋值，等等</span></span><br></pre></td></tr></table></figure>
+<h4 id="GDB-coredump"><a href="#GDB-coredump" class="headerlink" title="GDB+coredump"></a>GDB+coredump</h4><p> 现在你已经有了core 文件，怎么去看呢<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ gdb ./text core.xxx</span><br><span class="line"><span class="comment"># 这样你就进去了，你可以在下面看到信息我列举2个吧</span></span><br></pre></td></tr></table></figure></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">[root@izwz9a2ji83q34ecdeu4duz gbd]<span class="comment"># gdb ./arr core.23866 </span></span><br><span class="line">GNU gdb (GDB) Red Hat Enterprise Linux 7.6.1-114.el7</span><br><span class="line">Copyright (C) 2013 Free Software Foundation, Inc.</span><br><span class="line">License GPLv3+: GNU GPL version 3 or later &lt;http://gnu.org/licenses/gpl.html&gt;</span><br><span class="line">This is free software: you are free to change and redistribute it.</span><br><span class="line">There is NO WARRANTY, to the extent permitted by law.  Type <span class="string">"show copying"</span></span><br><span class="line">and <span class="string">"show warranty"</span> <span class="keyword">for</span> details.</span><br><span class="line">This GDB was configured as <span class="string">"x86_64-redhat-linux-gnu"</span>.</span><br><span class="line">For bug reporting instructions, please see:</span><br><span class="line">&lt;http://www.gnu.org/software/gdb/bugs/&gt;...</span><br><span class="line">Reading symbols from /home/gbd/arr...done.</span><br><span class="line">[New LWP 23866]</span><br><span class="line">Core was generated by `./arr<span class="string">'.</span></span><br><span class="line"><span class="string">Program terminated with signal 8, Arithmetic exception.</span></span><br><span class="line"><span class="string">#0  0x0000000000400521 in main () at arr.c:9</span></span><br><span class="line"><span class="string">9			add = add / a[i%4];</span></span><br><span class="line"><span class="string">Missing separate debuginfos, use: debuginfo-install glibc-2.17-260.el7_6.4.x86_64</span></span><br><span class="line"><span class="string">(gdb) p i</span></span><br><span class="line"><span class="string">$1 = 3</span></span><br><span class="line"><span class="string">(gdb) p a[i]</span></span><br><span class="line"><span class="string">$2 = 0</span></span><br><span class="line"><span class="string">(gdb) </span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># 相信大家知道原因了吧</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[root@izwz9a2ji83q34ecdeu4duz gbd]<span class="comment"># gdb ./client core.23983 </span></span><br><span class="line">GNU gdb (GDB) Red Hat Enterprise Linux 7.6.1-114.el7</span><br><span class="line">Copyright (C) 2013 Free Software Foundation, Inc.</span><br><span class="line">License GPLv3+: GNU GPL version 3 or later &lt;http://gnu.org/licenses/gpl.html&gt;</span><br><span class="line">This is free software: you are free to change and redistribute it.</span><br><span class="line">There is NO WARRANTY, to the extent permitted by law.  Type <span class="string">"show copying"</span></span><br><span class="line">and <span class="string">"show warranty"</span> <span class="keyword">for</span> details.</span><br><span class="line">This GDB was configured as <span class="string">"x86_64-redhat-linux-gnu"</span>.</span><br><span class="line">For bug reporting instructions, please see:</span><br><span class="line">&lt;http://www.gnu.org/software/gdb/bugs/&gt;...</span><br><span class="line">Reading symbols from /home/gbd/client...done.</span><br><span class="line">[New LWP 23983]</span><br><span class="line">Core was generated by `./client<span class="string">'.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Program terminated with signal 6, Aborted.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string"># 这里接收到信号 6 使程序中断。</span></span><br><span class="line"><span class="string">#0  0x00007f0302793207 in raise () from /lib64/libc.so.6</span></span><br><span class="line"><span class="string">Missing separate debuginfos, use: debuginfo-install glibc-2.17-260.el7_6.4.x86_64 libgcc-4.8.5-36.el7_6.1.x86_64</span></span><br></pre></td></tr></table></figure>
+<h3 id="多线程调试"><a href="#多线程调试" class="headerlink" title="多线程调试"></a>多线程调试</h3><p>  这里我给给出调试的方式，然后给个案例：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ gdb -p pid</span><br><span class="line">$ &lt;gdb&gt; info threads <span class="comment"># 查看所有线程的信息</span></span><br><span class="line">$ &lt;gdb&gt; thread [id] <span class="comment"># 进入到某一进程信息里面</span></span><br><span class="line">$ &lt;gdb&gt; thread apply all bt <span class="comment"># 查看所有线程堆栈</span></span><br><span class="line">$ &lt;gdb&gt; frame 2 <span class="comment"># 进入2线程的堆栈</span></span><br></pre></td></tr></table></figure></p>
+<p> 案例： 这里我给一个死锁的案例来使用GDB查找原因<br>        代码</p>
+<pre><code class="c++"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span>
+<span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span>
+<span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt;</span></span>
+<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;
+<span class="keyword">pthread_mutex_t</span>  mymutex;
+<span class="function"><span class="keyword">void</span> *<span class="title">myptherd</span><span class="params">(<span class="keyword">void</span> * arr)</span></span>
+<span class="function"></span>{
+        pthread_mutex_lock(&amp;mymutex);
+        <span class="built_in">cout</span> &lt;&lt; <span class="string">" hello word!!!"</span>&lt;&lt;<span class="built_in">endl</span>;
+        <span class="keyword">return</span> <span class="literal">NULL</span>;
+}
+
+<span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>
+<span class="function"></span>{
+        <span class="keyword">pthread_t</span> a[<span class="number">5</span>];
+        pthread_mutex_init(&amp;mymutex,<span class="literal">NULL</span>);
+        <span class="keyword">int</span> i = <span class="number">0</span>;
+        <span class="keyword">for</span> (i = <span class="number">0</span>; i&lt; <span class="number">5</span> ;i++)
+        {
+                pthread_create(&amp;a[i],<span class="literal">NULL</span>,myptherd, &amp;i);
+        }
+        <span class="keyword">while</span>(<span class="number">1</span>){}
+        <span class="keyword">return</span> <span class="number">0</span>;
+}
+</code></pre>
+<p>一个bash</p>
+<pre><code class="bash">[root@izwz9a2ji83q34ecdeu4duz gbd] g++ myptherd.cpp -o myptherd -g -lpthread
+[root@izwz9a2ji83q34ecdeu4duz gbd] ./myptherd 
+ hello word!!!
+
+</code></pre>
+<p>另一个bash</p>
+<pre><code class="bash">[root@izwz9a2ji83q34ecdeu4duz gbd] ps -aux | grep myptherd
+<span class="comment"># root     25331 50.1  0.1  55808  1208 pts/1    Rl+  10:20   0:52 ./myptherd</span>
+<span class="comment"># root     25429  0.0  0.0 112708   980 pts/2    R+   10:22   0:00 grep --color=auto myptherd</span>
+[root@izwz9a2ji83q34ecdeu4duz gbd] gdb -p 25331
+<span class="comment">#.......</span>
+<span class="comment">#.......</span>
+
+* 1    Thread 0x7fc1bfa49740 (LWP 25331) <span class="string">"myptherd"</span> main () at myptherd.cpp:23
+(gdb) thread apply all bt
+
+Thread 5 (Thread 0x7fc1bea2c700 (LWP 25332)):
+<span class="comment"># 0  0x00007fc1bf6274ed in __lll_lock_wait () from /lib64/libpthread.so.0</span>
+<span class="comment"># 1  0x00007fc1bf622dcb in _L_lock_883 () from /lib64/libpthread.so.0</span>
+<span class="comment"># 2  0x00007fc1bf622c98 in pthread_mutex_lock () from /lib64/libpthread.so.0</span>
+<span class="comment"># 3  0x0000000000400903 in myptherd (arr=0x7ffef7e0860c) at myptherd.cpp:8</span>
+<span class="comment"># 4  0x00007fc1bf620dd5 in start_thread () from /lib64/libpthread.so.0</span>
+<span class="comment"># 5  0x00007fc1beb2aead in clone () from /lib64/libc.so.6</span>
+
+Thread 4 (Thread 0x7fc1be22b700 (LWP 25333)):
+<span class="comment"># 0  0x00007fc1bf6274ed in __lll_lock_wait () from /lib64/libpthread.so.0</span>
+<span class="comment"># 1  0x00007fc1bf622dcb in _L_lock_883 () from /lib64/libpthread.so.0</span>
+<span class="comment"># 2  0x00007fc1bf622c98 in pthread_mutex_lock () from /lib64/libpthread.so.0</span>
+<span class="comment"># 3  0x0000000000400903 in myptherd (arr=0x7ffef7e0860c) at myptherd.cpp:8</span>
+<span class="comment"># 4  0x00007fc1bf620dd5 in start_thread () from /lib64/libpthread.so.0</span>
+<span class="comment"># 5  0x00007fc1beb2aead in clone () from /lib64/libc.so.6</span>
+
+Thread 3 (Thread 0x7fc1bda2a700 (LWP 25334)):
+<span class="comment"># 0  0x00007fc1bf6274ed in __lll_lock_wait () from /lib64/libpthread.so.0</span>
+<span class="comment"># 1  0x00007fc1bf622dcb in _L_lock_883 () from /lib64/libpthread.so.0</span>
+<span class="comment"># 2  0x00007fc1bf622c98 in pthread_mutex_lock () from /lib64/libpthread.so.0</span>
+<span class="comment"># 3  0x0000000000400903 in myptherd (arr=0x7ffef7e0860c) at myptherd.cpp:8</span>
+<span class="comment"># 4  0x00007fc1bf620dd5 in start_thread () from /lib64/libpthread.so.0</span>
+<span class="comment"># 5  0x00007fc1beb2aead in clone () from /lib64/libc.so.6</span>
+
+Thread 2 (Thread 0x7fc1bd229700 (LWP 25335)):
+<span class="comment"># 0  0x00007fc1bf6274ed in __lll_lock_wait () from /lib64/libpthread.so.0</span>
+<span class="comment"># 1  0x00007fc1bf622dcb in _L_lock_883 () from /lib64/libpthread.so.0</span>
+<span class="comment"># 2  0x00007fc1bf622c98 in pthread_mutex_lock () from /lib64/libpthread.so.0</span>
+<span class="comment"># 3  0x0000000000400903 in myptherd (arr=0x7ffef7e0860c) at myptherd.cpp:8</span>
+<span class="comment"># 4  0x00007fc1bf620dd5 in start_thread () from /lib64/libpthread.so.0</span>
+<span class="comment"># 5  0x00007fc1beb2aead in clone () from /lib64/libc.so.6</span>
+
+Thread 1 (Thread 0x7fc1bfa49740 (LWP 25331)):
+<span class="comment"># 0  main () at myptherd.cpp:23</span>
+
+
+(gdb) thread 2
+[Switching to thread 2 (Thread 0x7fc1bd229700 (LWP 25335))]
+<span class="comment"># 0  0x00007fc1bf6274ed in __lll_lock_wait () from /lib64/libpthread.so.0</span>
+(gdb) frame 3
+<span class="comment"># 3  0x0000000000400903 in myptherd (arr=0x7ffef7e0860c) at myptherd.cpp:8</span>
+8        pthread_mutex_lock(&amp;mymutex);
+(gdb) p mymutex
+
+<span class="variable">$1</span> = {__data = {__lock = 2, __count = 0, __owner = 25336, __nusers = 1, __kind = 0, __spins = 0, __elision = 0, __list = {__prev = 0x0, __next = 0x0}}, 
+  __size = <span class="string">"\002\000\000\000\000\000\000\000\370b\000\000\001"</span>, <span class="string">'\000'</span> &lt;repeats 26 <span class="built_in">times</span>&gt;, __align = 2}
+<span class="comment"># 这里我们可以看到 mymutex 这个变量里面（结构体）__owner = 25336 是锁的用户所有者，但是在线程中我们没有看到25336这个ID，___count = 0,说明没有可用锁了，因为代码中得到锁后并没有释放锁，造成了死锁。</span>
+
+(gdb) info threads
+
+  <span class="comment"># Id   Target Id         Frame </span>
+  <span class="comment"># 5    Thread 0x7fc1bea2c700 (LWP 25332) "myptherd" 0x00007fc1bf6274ed in __lll_lock_wait () from /lib64/libpthread.so.0</span>
+  <span class="comment"># 4    Thread 0x7fc1be22b700 (LWP 25333) "myptherd" 0x00007fc1bf6274ed in __lll_lock_wait () from /lib64/libpthread.so.0</span>
+  <span class="comment"># 3    Thread 0x7fc1bda2a700 (LWP 25334) "myptherd" 0x00007fc1bf6274ed in __lll_lock_wait () from /lib64/libpthread.so.0</span>
+  <span class="comment"># 2    Thread 0x7fc1bd229700 (LWP 25335) "myptherd" 0x00007fc1bf6274ed in __lll_lock_wait () from /lib64/libpthread.so.0</span>
+
+</code></pre>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="说明是堆栈的简单介绍"><a href="#说明是堆栈的简单介绍" class="headerlink" title="说明是堆栈的简单介绍"></a>说明是堆栈的简单介绍</h3><h3 id="GDB的详细使用方式"><a href="#GDB的详细使用方式" class="headerlink" title="GDB的详细使用方式"></a>GDB的详细使用方式</h3><h3 id="内存碎片"><a href="#内存碎片" class="headerlink" title="内存碎片"></a>内存碎片</h3>
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/05/12/gdb_use/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-myfile" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
