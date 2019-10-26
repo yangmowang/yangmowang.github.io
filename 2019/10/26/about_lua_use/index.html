@@ -6,15 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives | I Nead More Power</title>
+  <title>lua使用一之lua与C++的交互 | I Nead More Power</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="I Nead More Power">
-<meta property="og:url" content="http://yoursite.com/archives/index.html">
+  <meta name="description" content="现在公司用的是lua开发游戏，在公司中学习了lua语言，在开发的过程中遇到了一些坎坷，之前只学习过C++语言（算是语法掌握的比较熟练的语言，这里只敢说C++语法掌握熟练，C++熟练丶精通估计会被吊打），还学习过py写过压测工具。lua开发过程中还有点难受的呀，首先lua没有（可能是我没遭到）一款专门或者非常方便的使用lua开发的IDE，公司里面配的是SI，我电脑还有点问题，所以用起来很难受，打错字">
+<meta property="og:type" content="article">
+<meta property="og:title" content="lua使用一之lua与C++的交互">
+<meta property="og:url" content="http://yoursite.com/2019/10/26/about_lua_use/index.html">
 <meta property="og:site_name" content="I Nead More Power">
+<meta property="og:description" content="现在公司用的是lua开发游戏，在公司中学习了lua语言，在开发的过程中遇到了一些坎坷，之前只学习过C++语言（算是语法掌握的比较熟练的语言，这里只敢说C++语法掌握熟练，C++熟练丶精通估计会被吊打），还学习过py写过压测工具。lua开发过程中还有点难受的呀，首先lua没有（可能是我没遭到）一款专门或者非常方便的使用lua开发的IDE，公司里面配的是SI，我电脑还有点问题，所以用起来很难受，打错字">
 <meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-10-26T10:59:24.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="I Nead More Power">
+<meta name="twitter:title" content="lua使用一之lua与C++的交互">
+<meta name="twitter:description" content="现在公司用的是lua开发游戏，在公司中学习了lua语言，在开发的过程中遇到了一些坎坷，之前只学习过C++语言（算是语法掌握的比较熟练的语言，这里只敢说C++语法掌握熟练，C++熟练丶精通估计会被吊打），还学习过py写过压测工具。lua开发过程中还有点难受的呀，首先lua没有（可能是我没遭到）一款专门或者非常方便的使用lua开发的IDE，公司里面配的是SI，我电脑还有点问题，所以用起来很难受，打错字">
   
     <link rel="alternative" href="/atom.xml" title="I Nead More Power" type="application/atom+xml">
   
@@ -158,103 +162,186 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-about_lua_use" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 class="article-title" itemprop="name">
+      lua使用一之lua与C++的交互
+    </h1>
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/10/26/about_lua_use/" class="archive-article-date">
+
+        
+        <a href="/2019/10/26/about_lua_use/" class="archive-article-date">
   	<time datetime="2019-10-26T10:17:11.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-10-26</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/10/26/about_lua_use/">lua使用一之lua与C++的交互</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <pre><code>现在公司用的是lua开发游戏，在公司中学习了lua语言，在开发的过程中遇到了一些坎坷，之前只学习过C++语言（算是语法掌握的比较熟练的语言，这里只敢说C++语法掌握熟练，C++熟练丶精通估计会被吊打），还学习过py写过压测工具。lua开发过程中还有点难受的呀，首先lua没有（可能是我没遭到）一款专门或者非常方便的使用lua开发的IDE，公司里面配的是SI，我电脑还有点问题，所以用起来很难受，打错字符了还没有提示，一些手滑的操作，只能在运行并且代码走到出错的位置的时候才会被发现，感觉很头疼， 后来在同事的引进下用了 IDEA 这是一款JAVA的开发IDE但是用来开发Lua还是比较方便的。闲话少说，现在来介绍下lua和C++层的一些交互的方式。
+</code></pre><h3 id="简单原理"><a href="#简单原理" class="headerlink" title="简单原理"></a>简单原理</h3><pre><code>Lua和C++的交互是通过一个虚拟栈来实现的。（栈的特点：先进后出）
+索引方式：可以通过正负2级来进行索引
+     1 代表栈底 (获取栈的元素的方式可以通过1,2,3,4,5的方式进行)
+    -1 代表栈顶 (获取栈元素的的方式 -1,-2,-3,-4,-5)
+    (最先被压入栈的是栈底,最后被压入栈的是栈顶)
+这点很重要
 
-        <div class="article-info info-on-right">
-          
-          
+入栈的数据类型是以一个TValue这种数据结构保存在虚拟栈里面的。
+    struct TValue
+    {
+        value value;
+        int tt;
+    }
 
+    union value
+    {
+        GCObject *gc;  
+        void *p; 
+        lua_Number n; 
+        int b
+    }
+    -- gc是一个指针, 它可以指向的类型由联合体GCObject定义, 从图中可以看出, 有string, userdata, closure, table, proto, upvalue, thread。
+    -- 可以存一个指针, 实际上是lua中的light userdata结构。
+    -- 所有的数值存在这里。
+    -- Boolean值存在这里, 注意, lua_pushinteger不是存在这里, 而是存在n中, b只存布尔。
+
+
+    1. lua中, number, boolean, nil, light userdata四种类型的值是直接存在栈上元素里的, 和垃圾回收无关.
+    2. lua中, string, table, closure, userdata, thread存在栈上元素里的只是指针, 他们都会在生命周期结束后被垃圾回收.
+</code></pre><h3 id="简单的调用"><a href="#简单的调用" class="headerlink" title="简单的调用"></a>简单的调用</h3><pre><code>这里我简单的介绍一下Lua和C++通过蓄虚拟栈交互的方式(接口)
+</code></pre>
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/10/26/about_lua_use/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/05/12/gdb_use/" class="archive-article-date">
-  	<time datetime="2019-05-12T02:41:15.936Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-12</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2019/05/12/gdb_use/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">GDB的简单使用方式和使用场景</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/05/12/gdb_use/">GDB的简单使用方式和使用场景</a>
-    </h1>
+  
   
 
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/04/15/myfile/" class="archive-article-date">
-  	<time datetime="2019-04-15T02:13:50.429Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-04-15</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/04/15/myfile/">如何拥有属于自己的博客</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
   
 
-    
+  
 
 
           </div>
@@ -277,8 +364,8 @@
 	var yiliaConfig = {
 		mathjax: true,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
